@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Matrix Rain</title>
+  <style>
+    body { margin:0; background:black; overflow:hidden; cursor: none; }
+    canvas { display:block; }
+
+    /* Glitchy intro text */
+    #intro {
+      position: absolute; top: 20%; left: 50%;
+      transform: translateX(-50%);
+      color: lime; font-family: monospace; font-size: 24px;
+      animation: glitch 1s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px lime; }
+      25% { text-shadow: -2px -2px lime; }
+      50% { text-shadow: 2px -2px lime; }
+      75% { text-shadow: -2px 2px lime; }
+      100% { text-shadow: 2px 2px lime; }
+    }
+
+    /* Popup styling */
+    #popup {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8); color: lime;
+      padding: 20px; border: 2px solid lime;
+      text-align: center; font-family: monospace;
+      opacity: 0; transition: opacity 2s ease;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    button {
+      margin: 10px; padding: 10px 20px;
+      background: black; color: lime; border: 1px solid lime;
+      cursor: pointer; font-family: monospace;
+    }
+
+    /* Cursor trail */
+    .trail {
+      position: fixed; width: 8px; height: 8px;
+      background: lime; border-radius: 50%;
+      pointer-events: none; opacity: 0.7;
+      animation: fade 1s forwards;
+    }
+    @keyframes fade {
+      to { opacity: 0; transform: scale(0); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+  <div id="intro">Decrypting.exe...</div>
+  <div id="popup">
+    <p>System request: Do you accept?</p>
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+    <p id="countdown">Timeout in 10...</p>
+  </div>
+
+  <script>
+    // Matrix rain
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    const letters = "01";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function draw() {
+      ctx.fillStyle = "rgba(0,0,0,0.05)";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#0F0";
+      ctx.font = fontSize + "px monospace";
+      for(let i=0;i<drops.length;i++){
+        const text = letters[Math.floor(Math.random()*letters.length)];
+        ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+        if(drops[i]*fontSize > canvas.height && Math.random()>0.975){
+          drops[i]=0;
+        }
+        drops[i]++;
+      }
+    }
+    setInterval(draw,33);
+
+    // Show popup after intro
+    setTimeout(() => {
+      document.getElementById("intro").style.display = "none";
+      document.getElementById("popup").style.opacity = 1;
+    }, 3000);
+
+    // Buttons
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+    yesBtn.onclick = () => {
+      window.location.href = "love.html";
+    };
+    noBtn.onmouseover = () => {
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 50);
+      noBtn.style.position = "absolute";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.transform = `rotate(${Math.random()*360}deg) scale(0.9)`;
+    };
+
+    // Countdown
+    let timeLeft = 10;
+    const countdown = document.getElementById("countdown");
+    const timer = setInterval(() => {
+      timeLeft--;
+      countdown.textContent = "Timeout in " + timeLeft + "...";
+      if(timeLeft <= 0){
+        clearInterval(timer);
+        countdown.textContent = "System locked. Try again.";
+      }
+    },1000);
+
+    // Cursor trail
+    document.addEventListener("mousemove", e => {
+      const trail = document.createElement("div");
+      trail.className = "trail";
+      trail.style.left = e.pageX + "px";
+      trail.style.top = e.pageY + "px";
+      document.body.appendChild(trail);
+      setTimeout(()=>trail.remove(),1000);
+    });
+
+    // Sound effect
+    const audio = new Audio("https://www.soundjay.com/button/beep-07.wav");
+    yesBtn.onmouseover = () => audio.play();
+  </script>
+</body>
+</html>

@@ -26,15 +26,24 @@
 
     /* Popup styling */
     #popup {
-      position: absolute; top: 60%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.8); color: lime;
-      padding: 20px; border: 3px solid lime;
-      text-align: center; font-family: monospace;
-      font-size: 5vw;
-      opacity: 0; transition: opacity 2s ease;
-      animation: pulse 2s infinite;
-      max-width: 90%;
+  position: absolute; 
+  top: 60%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.8); 
+  color: lime;
+  width: 70vw;          /* fixed width relative to screen */
+  max-width: 350px;     /* cap size so it doesn’t get too wide */
+  aspect-ratio: 1 / 1;  /* force square shape */
+  padding: 20px;        /* smaller padding so it stays square */
+  border: 3px solid lime;
+  text-align: center; 
+  font-family: monospace;
+  font-size: 5vw;
+  opacity: 0; 
+  transition: opacity 2s ease;
+  animation: pulse 2s infinite;
+}
     }
     @keyframes pulse {
       0% { transform: translate(-50%, -50%) scale(1); }
@@ -147,3 +156,4 @@
   </script>
 </body>
 </html>
+
